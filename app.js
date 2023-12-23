@@ -19,12 +19,12 @@ app.set('view engine', 'ejs');
 app.use(expressSession({
     resave:false,
     saveUninitialized : false,
-    secert:"hey hey hey"
+    secret:"hey hey hey"
 }));  // --> allow data to save
 
 
 // passport setup
-app.use(passport.initialize); // -> initialized (create protected routes)
+app.use(passport.initialize()); // -> initialized (create protected routes)
 app.use(passport.session()); // -> allow to hold data -> passport data
 passport.serializeUser(usersRouter.serializeUser());
 passport.serializeUser(usersRouter.deserializeUser());
