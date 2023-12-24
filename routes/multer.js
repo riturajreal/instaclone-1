@@ -9,10 +9,10 @@ const storage = multer.diskStorage({
       cb(null, './public/images/uploads'); // file location
     },
     filename: function (req, file, cb) {
-      const unique = uuidv4(); // file name
-      cb(null, unique + path.extname(file.originalname) ); // file extension
+        const unique = uuidv4();
+        cb(null, unique + path.extname(file.originalname) ); // file extension
     }
-  })
+  });
   
   const upload = multer({ storage: storage }); // this helps to upload files
 

@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   profileImage: String,
+  bio: String,
   post: [{ type: mongoose.Schema.Types.ObjectId, ref: "post" }],
 });
 

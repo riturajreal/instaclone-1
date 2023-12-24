@@ -79,32 +79,33 @@ router.get("/logout", function(req,res,next) {
 
 
 // update route 
-router.post('/update', upload.single('image'), async function(req,res) {
-  // get logged in user
-  //const user = await userModel.findOne({username : req.session.passport.user});
+router.post('/update', upload.single('image'), async function(req, res) {
+  try {
+    // get logged-in user
+    const user = await userModel.findOneAndUpdate(
+      { username: req.session.passport.user },
+      {
+        username: req.body.username,
+        name: req.body.name,
+        bio: req.body.bio,
+      },
+      { new: true }
+    );
 
-
-
-  // getting and updating user info 
-  const user = await userModel.findOneAndUpdate({username : req.session.passport.user}, 
-    {
-      username : req.body.username,
-      name : req.body.name,
-      bio : req.body.bio,
-
-    }, {new:true}
-    
-  );
-
-    // updating user profile image
-    user.profileImage = req.file.filename;
-
-    // we added profile manually that' why
-    await user.save();
+    // updating user profile image if a file is uploaded
+    if (req.file) {
+      user.profileImage = req.file.filename;
+      await user.save();
+    }
 
     // now redirect
     res.redirect('/profile');
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
 
 // is Logged in function
 function isLoggedIn(req,res, next) {

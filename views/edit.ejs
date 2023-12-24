@@ -16,9 +16,9 @@
       <!-- UPDATE FORM -->
       <form class="w-full" action="/update" method="post" enctype="multipart/form-data">
         <input type="file" hidden id="imageinput" name="image">
-        <input class="px-3 mt-2 py-2 border-2 border-zinc-800 rounded-md block w-full bg-zinc-900" type="text" placeholder="username" name="usernae" value="<%= user.username %>">
+        <input class="px-3 mt-2 py-2 border-2 border-zinc-800 rounded-md block w-full bg-zinc-900" type="text" placeholder="username" name="username" value="<%= user.username %>">
         <input class="px-3 mt-2 py-2 border-2 border-zinc-800 rounded-md block w-full bg-zinc-900" type="text" placeholder="name" name="name" value="<%= user.name %>">
-        <textarea class="px-3 mt-2 py-2 border-2 border-zinc-800 rounded-md block w-full bg-zinc-900 resize-none" placeholder="Bio" name="bio">value="<%= user.bio %>"</textarea>
+        <textarea class="px-3 mt-2 py-2 border-2 border-zinc-800 rounded-md block w-full bg-zinc-900 resize-none" placeholder="Bio" name="bio"><%= user.bio %></textarea>
         <input class="w-full bg-blue-500 px-3 py-3 rounded-md mt-2" type="submit" value="Update Details">
       </form>
     </div>
@@ -28,7 +28,6 @@
     document.querySelector('#editbtn').addEventListener("click", function() {
         document.querySelector("#imageinput").click();
     });
-
     
   </script>
 <% include ./partials/footer.ejs %>
