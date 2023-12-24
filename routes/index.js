@@ -1,11 +1,8 @@
 var express = require('express');
 var router = express.Router();
-const userModel = require('./users.js');
+const userModel = require('./users');
 const passport = require('passport');
-
-
-
-
+const upload = require('./multer');
 
 // add local Strategy --> allow to make account 
 // and log in  using username and password
@@ -21,41 +18,100 @@ router.get('/login', function(req, res) {
   res.render('login', {footer: false});
 });
 
-router.get('/feed', function(req, res) {
+router.get('/feed', isLoggedIn, function(req, res) {
   res.render('feed', {footer: true});
 });
 
-router.get('/profile', function(req, res) {
-  res.render('profile', {footer: true});
+router.get('/profile', isLoggedIn, async function(req, res) {
+  const user = await userModel.findOne({username : req.session.passport.user});
+  res.render('profile', {footer: true, user});
 });
 
-router.get('/search', function(req, res) {
+router.get('/search', isLoggedIn, function(req, res) {
   res.render('search', {footer: true});
 });
 
-router.get('/edit', function(req, res) {
-  res.render('edit', {footer: true});
+router.get('/edit', isLoggedIn, async function(req, res) {
+  const user = await userModel.findOne({username : req.session.passport.user});
+  res.render('edit', {footer: true, user});
 });
 
-router.get('/upload', function(req, res) {
+router.get('/upload', isLoggedIn, function(req, res) {
   res.render('upload', {footer: true});
 });
 
+// register route
 router.post("/register", function(req,res,next) {
 
   const userData =  new userModel ({
       username : req.body.username,
       name : req.body.name,
-      email : req.body.email
   });
 
   // return a promise
   userModel.register(userData, req.body.password)
   .then(function() {
       passport.authenticate("local")(req,res, function () {
-        res.redirect("/profile");
+        res.redirect('/profile');
       })
   });
 });
+
+// login route
+router.post("/login", passport.authenticate("local", {
+  successRedirect :  "/profile",
+  failureRedirect : '/login'
+}), function(req,res) {
+  
+});
+
+
+// logout route 
+router.get("/logout", function(req,res,next) {
+  req.logout(function(err) {
+    if(err) return next(err);
+
+    res.redirect('/');
+
+    })
+});
+
+
+
+// update route 
+router.post('/update', upload.single('image'), async function(req,res) {
+  // get logged in user
+  //const user = await userModel.findOne({username : req.session.passport.user});
+
+
+
+  // getting and updating user info 
+  const user = await userModel.findOneAndUpdate({username : req.session.passport.user}, 
+    {
+      username : req.body.username,
+      name : req.body.name,
+      bio : req.body.bio,
+
+    }, {new:true}
+    
+  );
+
+    // updating user profile image
+    user.profileImage = req.file.filename;
+
+    // we added profile manually that' why
+    await user.save();
+
+    // now redirect
+    res.redirect('/profile');
+});
+
+// is Logged in function
+function isLoggedIn(req,res, next) {
+    if(req.isAuthenticated()) return next(); // -->  allow to visited authorized routes
+    res.redirect("/login"); // else you have to login to explore
+};
+
+
 
 module.exports = router;

@@ -27,7 +27,7 @@ app.use(expressSession({
 app.use(passport.initialize()); // -> initialized (create protected routes)
 app.use(passport.session()); // -> allow to hold data -> passport data
 passport.serializeUser(usersRouter.serializeUser());
-passport.serializeUser(usersRouter.deserializeUser());
+passport.deserializeUser(usersRouter.deserializeUser());
 
 
 app.use(logger('dev'));
