@@ -26,3 +26,7 @@ debug
 
 --> for tailwind Setup : 
 https://dev.to/covalhalla/using-tailwindcss-with-express-and-ejs-2hl0
+
+https://github.com/riturajreal/instaclone-pr/assets/107117165/074b7d07-5bb7-4173-9908-584d61afc733
+
+
