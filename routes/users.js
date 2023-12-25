@@ -12,8 +12,17 @@ const userSchema = mongoose.Schema({
     type : String,
     default : "hello",
   },
-  
+
   posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "post" }]
+});
+
+userSchema.pre('remove', async function (next) {
+  try {
+    await this.model('post').deleteMany({ _id: { $in: this.posts } });
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 userSchema.plugin(plm);

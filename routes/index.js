@@ -136,6 +136,14 @@ router.post('/upload', isLoggedIn, upload.single('image'), async function(req,re
 });
 
 
+// user search route
+router.get("/username/:username", isLoggedIn, async function(req,res) {
+  const regex = new RegExp(`^${req.params.username}`, "i");
+  const users = await userModel.find({username:regex});
+  res.json(users);
+});
+
+
 // is Logged in function
 function isLoggedIn(req,res, next) {
     if(req.isAuthenticated()) return next(); // -->  allow to visited authorized routes
