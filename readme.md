@@ -22,3 +22,7 @@ express
 morgan
 http-errors
 debug
+
+
+--> for tailwind Setup : 
+https://dev.to/covalhalla/using-tailwindcss-with-express-and-ejs-2hl0

@@ -9,7 +9,7 @@ const userSchema = mongoose.Schema({
   email: { type: String, unique: true },
   profileImage: String,
   bio: String,
-  post: [{ type: mongoose.Schema.Types.ObjectId, ref: "post" }],
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "post" }],
 });
 
 userSchema.plugin(plm);

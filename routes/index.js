@@ -3,6 +3,7 @@ var router = express.Router();
 const userModel = require('./users');
 const passport = require('passport');
 const upload = require('./multer');
+const postModel = require('./post');
 
 // add local Strategy --> allow to make account 
 // and log in  using username and password
@@ -18,8 +19,12 @@ router.get('/login', function(req, res) {
   res.render('login', {footer: false});
 });
 
-router.get('/feed', isLoggedIn, function(req, res) {
-  res.render('feed', {footer: true});
+router.get('/feed', isLoggedIn, async function(req, res) {
+
+  // without populate --> only id ,,, with populate --> inner data
+  const posts = await postModel.find().populate("user");
+
+  res.render('feed', {footer: true, posts});
 });
 
 router.get('/profile', isLoggedIn, async function(req, res) {
@@ -104,6 +109,26 @@ router.post('/update', upload.single('image'), async function(req, res) {
     console.error('Error updating user:', error);
     res.status(500).send('Internal Server Error');
   }
+});
+
+
+// upload route
+router.post('/upload', isLoggedIn, upload.single('image'), async function(req,res) {
+
+   const user = await userModel.findOne({username : req.session.passport.user});
+
+   const post = await postModel.create({
+     picture : req.file.filename,
+     user : user._id,
+     caption : req.body.caption,
+   });
+
+   // user ke post array ke liye 
+   user.posts.push(post._id);
+   await user.save();
+
+   res.redirect("/feed");
+
 });
 
 
