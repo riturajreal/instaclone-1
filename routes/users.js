@@ -8,8 +8,12 @@ const userSchema = mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   profileImage: String,
-  bio: String,
-  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "post" }],
+  bio: {
+    type : String,
+    default : "hello",
+  },
+  
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "post" }]
 });
 
 userSchema.plugin(plm);

@@ -28,9 +28,21 @@ router.get('/feed', isLoggedIn, async function(req, res) {
 });
 
 router.get('/profile', isLoggedIn, async function(req, res) {
-  const user = await userModel.findOne({username : req.session.passport.user});
-  res.render('profile', {footer: true, user});
+  try {
+    const user = await userModel.findOne({username: req.session.passport.user}).populate("posts");
+
+    if (user && user.posts) {
+      res.render('profile', {footer: true, user});
+    } else {
+      // Handle the case where the user or user.posts is undefined
+      res.render('profile', {footer: true, user: null});
+    }
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
 
 router.get('/search', isLoggedIn, function(req, res) {
   res.render('search', {footer: true});
@@ -51,6 +63,7 @@ router.post("/register", function(req,res,next) {
   const userData =  new userModel ({
       username : req.body.username,
       name : req.body.name,
+      email : req.body.email,
   });
 
   // return a promise
