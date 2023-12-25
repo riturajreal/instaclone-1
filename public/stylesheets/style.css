@@ -5,3 +5,7 @@
 a:focus {
   outline: none !important;
 }
+
+body{
+  background-color: transparent;
+}

@@ -28,19 +28,10 @@ router.get('/feed', isLoggedIn, async function(req, res) {
 });
 
 router.get('/profile', isLoggedIn, async function(req, res) {
-  try {
-    const user = await userModel.findOne({username: req.session.passport.user}).populate("posts");
 
-    if (user && user.posts) {
+    const user = await userModel.findOne({username: req.session.passport.user}).populate("posts");
       res.render('profile', {footer: true, user});
-    } else {
-      // Handle the case where the user or user.posts is undefined
-      res.render('profile', {footer: true, user: null});
-    }
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    res.status(500).send('Internal Server Error');
-  }
+    
 });
 
 
